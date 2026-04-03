@@ -44,6 +44,7 @@ Controller → Service → Repository → Banco de Dados
 
 ### 1. Subir o banco com Docker
 
+```
 docker run -d \
   --name postgres-pets \
   -e POSTGRES_DB=pets \
@@ -51,12 +52,13 @@ docker run -d \
   -e POSTGRES_PASSWORD=postgres \
   -p 5432:5432 \
   postgres
+```
 
 ---
 
 ### 2. Rodar a aplicação
 
-./mvnw spring-boot:run
+*./mvnw spring-boot:run*
 
 ou execute a classe principal no IntelliJ.
 
@@ -77,11 +79,11 @@ http://localhost:8080/index2.html
 - Arquivo “application.properties”
 
 *spring.datasource.url=jdbc:postgresql://localhost:5432/pets*  
-*spring.datasource.username=postgres  *
-*spring.datasource.password=postgres  *
+*spring.datasource.username=postgres*
+*spring.datasource.password=postgres*
 
-*spring.jpa.hibernate.ddl-auto=update  *
-*spring.jpa.show-sql=true*  
+*spring.jpa.hibernate.ddl-auto=update*
+*spring.jpa.show-sql=true*
 
 ---
 
@@ -89,7 +91,7 @@ http://localhost:8080/index2.html
 
 O projeto utiliza PostgreSQL como banco de dados e pode ser configurado de duas formas:
 
-#🔹 Opção 1 — Criação automática (Hibernate)
+🔹 Opção 1 — Criação automática (Hibernate)
 
 Com a configuração abaixo no application.properties, o Spring Boot cria automaticamente as tabelas com base nas entidades:
 
@@ -98,7 +100,7 @@ Com a configuração abaixo no application.properties, o Spring Boot cria automa
 Essa abordagem é prática para desenvolvimento, pois evita a necessidade de criar tabelas manualmente.
 
 
-#🔹 Opção 2 — Criação manual (SQL):
+🔹 Opção 2 — Criação manual (SQL):
 
 Também é possível criar a estrutura do banco manualmente utilizando comandos SQL:
 
@@ -165,7 +167,7 @@ src/
 
 ---
 
-## 👩‍💻 Autora
+## 👩‍💻 Autoria
 
 - Renata Toncovitch das Neves
 - Thiago Goldin

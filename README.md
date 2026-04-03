@@ -74,6 +74,8 @@ http://localhost:8080/index2.html
 
 ## 🗄️ Configuração do banco
 
+- Arquivo “application.properties”
+
 spring.datasource.url=jdbc:postgresql://localhost:5432/pets  
 spring.datasource.username=postgres  
 spring.datasource.password=postgres  
@@ -88,13 +90,18 @@ spring.jpa.show-sql=true
 O projeto utiliza PostgreSQL como banco de dados e pode ser configurado de duas formas:
 
 🔹 Opção 1 — Criação automática (Hibernate)
+
 Com a configuração abaixo no application.properties, o Spring Boot cria automaticamente as tabelas com base nas entidades:
-spring.jpa.hibernate.ddl-auto=update
+
+*spring.jpa.hibernate.ddl-auto=update*
+
 Essa abordagem é prática para desenvolvimento, pois evita a necessidade de criar tabelas manualmente.
 
-🔹 Opção 2 — Criação manual (SQL)
+🔹 Opção 2 — Criação manual (SQL):
+
 Também é possível criar a estrutura do banco manualmente utilizando comandos SQL:
 
+```sql
 CREATE TABLE pets (
     id BIGSERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
@@ -114,6 +121,7 @@ VALUES (
     8,
     'https://petanjo.com/blog/wp-content/uploads/2021/11/labrador-tudo-sobre-a-raca.jpg'
 );
+```
 
 ⚠️ Observações importantes
 - O banco de dados precisa ser criado previamente:
@@ -124,15 +132,17 @@ CREATE DATABASE pets;
 
 ## 📦 Estrutura do projeto
 
-src/  
- ├── controller/  
- ├── service/  
- ├── repository/  
- ├── model/  
- ├── dto/  
- └── resources/  
-      └── static/  
-           └── index.html  
+```
+src/
+ ├── controller/   → endpoints da API
+ ├── service/      → regras de negócio
+ ├── repository/   → acesso ao banco
+ ├── model/        → entidades
+ ├── dto/          → objetos de transferência
+ └── resources/
+      └── static/  → frontend (HTML)
+           └── index2.html
+```
 
 ---
 

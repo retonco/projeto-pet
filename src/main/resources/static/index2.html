@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Pets</title>
+</head>
+
+<body>
+
+  <!-- 1. FORMULÁRIO -->
+  <h1>Cadastro de Pets</h1>
+
+  <form id="petForm">
+    <input type="text" id="nome" placeholder="Nome" required><br>
+    <input type="text" id="especie" placeholder="Espécie"><br>
+    <input type="text" id="sexo" placeholder="Sexo"><br>
+    <input type="text" id="raca" placeholder="Raça"><br>
+    <input type="number" id="idade" placeholder="Idade"><br>
+    <input type="text" id="imagem" placeholder="Imagem URL"><br>
+    <button type="submit">Salvar</button>
+  </form>
+
+  <!-- 2. LISTA -->
+  <h2>Lista de Pets para Adoção</h2>
+  <ul id="lista"></ul>
+
+  <!-- 3. SCRIPT (SEMPRE POR ÚLTIMO) -->
+  <script>
+
+    const API = "http://localhost:8080/bobconnect";
+
+    // 🔹 carregar lista
+    async function loadPets() {
+      const response = await fetch(API);
+      const pets = await response.json();
+
+      const lista = document.getElementById("lista");
+      lista.innerHTML = "";
+
+      pets.forEach(p => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+  <div onclick="toggleDetails(${p.id})" style="cursor: pointer;">
+    <img src="${p.imagem}" width="100" height="100" style="object-fit: cover; border-radius: 8px;"><br>
+    <strong>${p.nome}</strong> (${p.especie})
+  </div>
+
+  <div id="details-${p.id}" style="display: none; margin-top: 5px;">
+    <p>Sexo: ${p.sexo}</p>
+    <p>Raça: ${p.raca}</p>
+    <p>Idade: ${p.idade}</p>
+
+    <button onclick="event.stopPropagation(); editPet(${p.id}, '${p.nome}', '${p.especie}', '${p.sexo}', '${p.raca}', ${p.idade}, '${p.imagem}')">Editar</button>
+    <button onclick="event.stopPropagation(); deletePet(${p.id})">Excluir</button>
+  </div>
+`;
+        lista.appendChild(li);
+      });
+    }
+
+    // 🔹 deletar
+    async function deletePet(id) {
+      await fetch(`${API}/${id}`, { method: "DELETE" });
+      loadPets();
+    }
+
+    // 🔹 editar (preenche form)
+    function editPet(id, nome, especie, sexo, raca, idade, imagem){
+      document.getElementById("nome").value = nome;
+      document.getElementById("especie").value = especie;
+      document.getElementById("sexo").value = sexo;
+      document.getElementById("raca").value = raca;
+      document.getElementById("idade").value = idade;
+      document.getElementById("imagem").value = imagem;
+
+      document.getElementById("petForm").dataset.id = id;
+    }
+
+    // 🔹 submit (POST ou PUT)
+    document.getElementById("petForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const id = e.target.dataset.id;
+
+      const pet = {
+        nome: document.getElementById("nome").value,
+        especie: document.getElementById("especie").value,
+        sexo: document.getElementById("sexo").value,
+        raca: document.getElementById("raca").value,
+        idade: parseInt(document.getElementById("idade").value),
+        imagem: document.getElementById("imagem").value
+      };
+
+      if(id){
+        await fetch(`${API}/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(pet)
+        });
+      } else {
+        await fetch(API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(pet)
+        });
+      }
+
+      e.target.reset();
+      e.target.dataset.id = "";
+
+      loadPets();
+    });
+
+    // 🔹 inicializar
+    loadPets();
+
+    function toggleDetails(id){
+  const div = document.getElementById(`details-${id}`);
+
+  if(div.style.display === "none"){
+    div.style.display = "block";
+  } else {
+    div.style.display = "none";
+  }
+}
+  </script>
+
+</body>
+</html>

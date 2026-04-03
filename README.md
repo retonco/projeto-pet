@@ -78,15 +78,12 @@ http://localhost:8080/index2.html
 
 - Arquivo “application.properties”
 
-```*spring.datasource.url=jdbc:postgresql://localhost:5432/pets*  
+```spring.datasource.url=jdbc:postgresql://localhost:5432/pets  
+spring.datasource.username=postgres
+spring.datasource.password=postgres
 
-*spring.datasource.username=postgres*
-
-*spring.datasource.password=postgres*
-
-*spring.jpa.hibernate.ddl-auto=update*
-
-*spring.jpa.show-sql=true*
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
 ```
 
 ---

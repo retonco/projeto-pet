@@ -76,12 +76,12 @@ http://localhost:8080/index2.html
 
 - Arquivo “application.properties”
 
-spring.datasource.url=jdbc:postgresql://localhost:5432/pets  
+*spring.datasource.url=jdbc:postgresql://localhost:5432/pets  
 spring.datasource.username=postgres  
 spring.datasource.password=postgres  
 
 spring.jpa.hibernate.ddl-auto=update  
-spring.jpa.show-sql=true  
+spring.jpa.show-sql=true*  
 
 ---
 
@@ -125,7 +125,7 @@ VALUES (
 
 ⚠️ Observações importantes
 - O banco de dados precisa ser criado previamente:
-CREATE DATABASE pets;
+*CREATE DATABASE pets;*
 - O Spring Boot não cria o banco, apenas as tabelas
 
 ---
@@ -164,9 +164,9 @@ src/
 
 ## 👩‍💻 Autora
 
-Renata Toncovitch das Neves
-Thiago Goldin
-Arthur Bueno
+- Renata Toncovitch das Neves
+- Thiago Goldin
+- Arthur Bueno
 
 ---
 

@@ -170,7 +170,7 @@ src/
 
 ## 👩‍💻 Autoria
 
-- Renata Toncovitch das Neves
+- Renata Toncovitch
 - Thiago Goldin
 - Arthur Bueno
 

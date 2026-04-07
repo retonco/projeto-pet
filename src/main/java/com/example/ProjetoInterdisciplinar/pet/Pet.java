@@ -1,5 +1,6 @@
 package com.example.ProjetoInterdisciplinar.pet;
 
+import com.example.ProjetoInterdisciplinar.adotante.Adotante;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,4 +34,9 @@ public class Pet {
         this.idade = data.idade();
         this.imagem = data.imagem();
     }
+
+    //Relacionamento
+    @ManyToOne
+    @JoinColumn(name = "adotante_id")
+    private Adotante adotante;
 }

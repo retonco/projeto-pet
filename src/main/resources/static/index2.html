@@ -1,109 +1,133 @@
-<!DOCTYPE html> <!-- Define que o documento é HTML5 -->
-
-<html lang="pt-br"> <!-- Início do HTML e define o idioma como português -->
+<!DOCTYPE html>
+<html lang="pt-br">
 
 <head>
-    <meta charset="UTF-8"> <!-- Define codificação de caracteres (acentos, etc) -->
-    <title>Pets</title> <!-- Título da aba do navegador -->
+    <meta charset="UTF-8">
+    <title>Pets</title>
 </head>
 
-<body> <!-- Tudo que aparece visualmente na página -->
+<body>
 
-<!-- 1. FORMULÁRIO -->
-<h1>Cadastro de Pets</h1> <!-- Título da seção -->
+<div style="display: flex; gap: 5px; align-items: flex-start;">
 
-<form id="petForm"> <!-- Formulário para entrada de dados -->
-    <input type="text" id="nome" placeholder="Nome" required><br> <!-- Campo de nome (obrigatório) -->
-    <input type="text" id="especie" placeholder="Espécie"><br>
-    <select id="sexo" required>
-        <option value="">Selecione o sexo</option>
-        <option value="MACHO">Macho</option>
-        <option value="FEMEA">Fêmea</option>
-    </select><br>
-    <input type="text" id="raca" placeholder="Raça"><br>
-    <input type="number" id="idade" placeholder="Idade" min="0" required><br>
-    <input type="text" id="imagem" placeholder="Imagem URL"><br>
+    <!-- PETS -->
+    <div style="flex: 1;">
+        <h1>Cadastro de Pets</h1>
 
-    <!-- Botão que envia o formulário -->
-    <button type="submit">Salvar</button>
-</form>
+        <form id="petForm">
+            <input type="text" id="nome" placeholder="Nome" required><br>
+            <input type="text" id="especie" placeholder="Espécie"><br>
 
-<!-- 2. LISTA -->
+            <select id="sexo" required>
+                <option value="">Selecione o sexo</option>
+                <option value="MACHO">Macho</option>
+                <option value="FEMEA">Fêmea</option>
+            </select><br>
+
+            <input type="text" id="raca" placeholder="Raça"><br>
+            <input type="number" id="idade" placeholder="Idade" min="0" required><br>
+            <input type="text" id="imagem" placeholder="Imagem URL"><br>
+
+            <button type="submit">Salvar</button>
+        </form>
+    </div>
+
+    <!-- ADOTANTES -->
+    <div style="flex: 1;">
+        <h1>Cadastro de Adotantes</h1>
+
+        <form id="adotanteForm">
+            <input type="text" id="adotanteNome" placeholder="Nome" required><br>
+            <input type="email" id="adotanteEmail" placeholder="Email" required><br>
+            <input type="text" id="adotanteTelefone" placeholder="Telefone"><br>
+
+            <button type="submit">Salvar Adotante</button>
+        </form>
+    </div>
+
+</div>
+
 <h2>Lista de Pets para Adoção</h2>
+<div id="lista" style="
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+"></div>
 
-<!-- Lista onde os pets serão inseridos dinamicamente -->
-<ul id="lista"></ul>
 
-<!-- 3. SCRIPT (SEMPRE POR ÚLTIMO) -->
 <script>
+    const API_ADOTANTES = "http://localhost:8080/adotantes";
 
-    // URL base da API (backend)
-    const API = "http://localhost:8080/bobconnect/pets";
+    async function getAdotantes(){
+        const response = await fetch(API_ADOTANTES);
+        return await response.json();
+    }
 
-    // Função para carregar os pets da API
-    async function loadPets() {
+    async function loadAdotantes(){
+        const response = await fetch(API_ADOTANTES);
+        const adotantes = await response.json();
 
-        // Faz requisição GET para API
-        const response = await fetch(API);
-
-        // Converte resposta para JSON
-        const pets = await response.json();
-
-        // Seleciona a lista no HTML
-        const lista = document.getElementById("lista");
-
-        // Limpa lista antes de recarregar
+        const lista = document.getElementById("listaAdotantes");
         lista.innerHTML = "";
 
-        // Percorre cada pet retornado
-        pets.forEach(p => {
-
-            // Cria elemento <li>
-            const li = document.createElement("li");
-
-            // Insere HTML dentro do li (template dinâmico)
-            li.innerHTML = `
-  <!-- Área clicável -->
-  <div onclick="toggleDetails(${p.id})" style="cursor: pointer;">
-
-    <!-- Imagem do pet -->
-    <img src="${p.imagem}" width="100" height="100" style="object-fit: cover; border-radius: 8px;"><br>
-
-    <!-- Nome e espécie -->
-    <strong>${p.nome}</strong> (${p.especie})
-  </div>
-
-  <!-- Detalhes ocultos inicialmente -->
-  <div id="details-${p.id}" style="display: none; margin-top: 5px;">
-
-    <!-- Informações adicionais -->
-    <p>Sexo: ${p.sexo}</p>
-    <p>Raça: ${p.raca}</p>
-    <p>Idade: ${p.idade}</p>
-
-    <!-- Botão editar (preenche formulário) -->
-    <button onclick="event.stopPropagation(); editPet(${p.id}, '${p.nome}', '${p.especie}', '${p.sexo}', '${p.raca}', ${p.idade}, '${p.imagem}')">Editar</button>
-
-    <!-- Botão excluir -->
-    <button onclick="event.stopPropagation(); deletePet(${p.id})">Excluir</button>
-  </div>
-`;
-
-            // Adiciona o item na lista
+        adotantes.forEach(a => {
+            const li = document.createElement("div");
+            li.innerHTML = `${a.nome} (${a.email})`;
             lista.appendChild(li);
         });
     }
 
-    // Função para deletar pet
+    const API = "http://localhost:8080/bobconnect/pets";
+
+    // ================== LOAD ==================
+    async function loadPets() {
+        const response = await fetch(API);
+        const pets = await response.json();
+
+        const lista = document.getElementById("lista");
+        lista.innerHTML = "";
+
+        pets.forEach(p => {
+
+            const li = document.createElement("div");
+
+            li.innerHTML = `
+        <div onclick="toggleDetails(${p.id})" style="cursor: pointer;">
+
+            <img src="${p.imagem}" width="100" height="100" style="object-fit: cover; border-radius: 8px;"><br>
+
+            <strong>${p.nome}</strong> (${p.especie})
+        </div>
+
+        <div id="details-${p.id}" style="display: none; margin-top: 5px;">
+    <p>Sexo: ${p.sexo}</p>
+    <p>Raça: ${p.raca}</p>
+    <p>Idade: ${p.idade}</p>
+    <p>Status: ${p.adotanteNome ? "❌ Adotado" : "✅ Disponível"}</p>
+
+    <button onclick="event.stopPropagation(); editPet(...)">Editar</button>
+    <button onclick="event.stopPropagation(); deletePet(${p.id})">Excluir</button>
+
+    ${!p.adotanteNome ? `
+        <button onclick="event.stopPropagation(); adotarPet(${p.id})">Adotar</button>
+    ` : `
+        <span style="color:red; font-weight:bold;"></span>
+    `}
+</div>
+        `;
+
+            lista.appendChild(li);
+        });
+    }
+
+    // ================== DELETE ==================
     async function deletePet(id) {
-
-        // Envia requisição DELETE para API
         await fetch(`${API}/${id}`, { method: "DELETE" });
-
-        // Recarrega lista após exclusão
         loadPets();
     }
-    // FUNÇÃO PARA CONVERTER TEXTO → ENUM
+
+    // ================== EDIT ==================
     function mapSexoParaEnum(sexo){
         if(!sexo) return "";
 
@@ -115,10 +139,8 @@
         return "";
     }
 
-    // Função para editar (preenche o formulário)
     function editPet(id, nome, especie, sexo, raca, idade, imagem){
 
-        // Preenche os campos com os dados do pet
         document.getElementById("nome").value = nome;
         document.getElementById("especie").value = especie;
         document.getElementById("sexo").value = mapSexoParaEnum(sexo);
@@ -126,74 +148,38 @@
         document.getElementById("idade").value = idade;
         document.getElementById("imagem").value = imagem;
 
-        // Armazena o ID no formulário (para saber se é edição)
         document.getElementById("petForm").dataset.id = id;
     }
 
-    // Evento de envio do formulário (CREATE ou UPDATE)
+    // ================== CREATE / UPDATE ==================
     document.getElementById("petForm").addEventListener("submit", async (e) => {
 
-        // Evita recarregar a página
         e.preventDefault();
 
-        // Recupera ID (se existir → edição)
         const id = e.target.dataset.id;
 
-        // Cria objeto com dados do formulário
-        document.getElementById("petForm").addEventListener("submit", async (e) => {
+        const idadeInput = document.getElementById("idade").value;
 
-            e.preventDefault();
+        if (!idadeInput || idadeInput < 0) {
+            alert("Idade inválida");
+            return;
+        }
 
-            const id = e.target.dataset.id;
+        const pet = {
+            nome: document.getElementById("nome").value,
+            especie: document.getElementById("especie").value,
+            sexo: document.getElementById("sexo").value,
+            raca: document.getElementById("raca").value,
+            idade: parseInt(idadeInput),
+            imagem: document.getElementById("imagem").value
+        };
 
-            // pega idade primeiro
-            const idadeInput = document.getElementById("idade").value;
-
-            // valida antes de tudo
-            if (!idadeInput || idadeInput < 0) {
-                alert("Idade inválida");
-                return;
-            }
-
-            const pet = {
-                nome: document.getElementById("nome").value,
-                especie: document.getElementById("especie").value,
-                sexo: document.getElementById("sexo").value,
-                raca: document.getElementById("raca").value,
-                idade: parseInt(idadeInput),
-                imagem: document.getElementById("imagem").value
-            };
-
-            if(id){
-                await fetch(`${API}/${id}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(pet)
-                });
-            } else {
-                await fetch(API, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(pet)
-                });
-            }
-
-            e.target.reset();
-            e.target.dataset.id = "";
-
-            loadPets();
-        });
-
-
-        // Se tiver ID → UPDATE
         if(id){
             await fetch(`${API}/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(pet) // Converte objeto para JSON
+                body: JSON.stringify(pet)
             });
-
-            // Se não tiver ID → CREATE
         } else {
             await fetch(API, {
                 method: "POST",
@@ -202,35 +188,90 @@
             });
         }
 
-        // Limpa formulário
         e.target.reset();
-
-        // Remove ID (volta para modo criação)
         e.target.dataset.id = "";
 
-        // Atualiza lista
         loadPets();
     });
+    // ================== ADOTAR ==================
+    async function adotarPet(id){
 
-    // Carrega os pets ao abrir a página
-    loadPets();
+        try {
+            const adotantes = await getAdotantes();
 
-    // Função para mostrar/esconder detalhes
-    function toggleDetails(id){
+            // cria lista numerada (fake)
+            const listaNumerada = adotantes.map((a, index) =>
+                `${index + 1} - ${a.nome}`
+            ).join("\n");
 
-        // Seleciona a div de detalhes
-        const div = document.getElementById(`details-${id}`);
+            const escolha = prompt(
+                "Escolha o número do adotante:\n\n" + listaNumerada
+            );
 
-        // Alterna visibilidade
-        if(div.style.display === "none"){
-            div.style.display = "block";
-        } else {
-            div.style.display = "none";
+            if(!escolha){
+
+                return;
+            }
+
+            const indexEscolhido = parseInt(escolha) - 1;
+
+            // valida escolha
+            if(indexEscolhido < 0 || indexEscolhido >= adotantes.length){
+                alert("Opção inválida");
+                return;
+            }
+
+            // pega o ID REAL
+            const adotanteId = adotantes[indexEscolhido].id;
+
+            const response = await fetch(`${API}/${id}/adotar/${adotanteId}`, {
+                method: "POST"
+            });
+
+            if(!response.ok){
+                throw new Error("Este pet já foi adotado");
+            }
+
+            alert("Pet adotado com sucesso!");
+            loadPets();
+
+        } catch (error) {
+            alert(error.message);
         }
     }
+
+    // ================== CADASTRA ADOTANTE ==================
+    document.getElementById("adotanteForm").addEventListener("submit", async (e) => {
+
+        e.preventDefault();
+
+        const adotante = {
+            nome: document.getElementById("adotanteNome").value,
+            email: document.getElementById("adotanteEmail").value,
+            telefone: document.getElementById("adotanteTelefone").value
+        };
+
+        await fetch(API_ADOTANTES, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(adotante)
+        });
+
+        e.target.reset();
+
+        loadAdotantes();
+    });
+
+    // ================== TOGGLE ==================
+    function toggleDetails(id){
+        const div = document.getElementById(`details-${id}`);
+        div.style.display = div.style.display === "none" ? "block" : "none";
+    }
+
+    // ================== INIT ==================
+    loadPets();
 
 </script>
 
 </body>
 </html>
-

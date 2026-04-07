@@ -17,15 +17,18 @@ public class Pet {
     private Long id;
     private String nome;
     private String especie;
-    private String sexo;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Sexo sexo;
     private String raca;
+    @Column(nullable = false)
     private Integer idade;
     private String imagem;
 
     public Pet(PetRequestDTO data) {
         this.nome = data.nome();
         this.especie = data.especie();
-        this.sexo = data.sexo();
+        this.sexo = Sexo.fromString(data.sexo());
         this.raca = data.raca();
         this.idade = data.idade();
         this.imagem = data.imagem();

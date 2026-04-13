@@ -106,7 +106,15 @@
     <p>Idade: ${p.idade}</p>
     <p>Status: ${p.adotanteNome ? "❌ Adotado" : "✅ Disponível"}</p>
 
-    <button onclick="event.stopPropagation(); editPet(...)">Editar</button>
+    <button onclick="event.stopPropagation(); editPet(
+    ${p.id},
+    '${p.nome}',
+    '${p.especie}',
+    '${p.sexo}',
+    '${p.raca}',
+    ${p.idade},
+    '${p.imagem}'
+)">Editar</button>
     <button onclick="event.stopPropagation(); deletePet(${p.id})">Excluir</button>
 
     ${!p.adotanteNome ? `

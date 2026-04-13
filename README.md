@@ -35,8 +35,19 @@ Controller → Service → Repository → Banco de Dados
 - Listagem de pets (GET)
 - Atualização de pets (PUT)
 - Remoção de pets (DELETE)
+- Cadastro de adotantes (POST)
+- Listagem de adotantes (GET)
 - Exibição de imagens via URL
 - Interface web integrada com a API
+
+### 🔗 Adoção
+- Associação entre pet e adotante  
+- Um pet pode estar vinculado a um adotante  
+
+### ✔️ Validações
+- Idade não pode ser negativa  
+- Sexo permitido: `MACHO` ou `FEMEA`  
+- E-mail único para adotantes  
 
 ---
 
@@ -106,26 +117,33 @@ Essa abordagem é prática para desenvolvimento, pois evita a necessidade de cri
 Também é possível criar a estrutura do banco manualmente utilizando comandos SQL:
 
 ```sql
-CREATE TABLE pets (
-    id BIGSERIAL PRIMARY KEY,
+CREATE TABLE adotantes (
+    id SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
-    especie VARCHAR(50) NOT NULL,
-    sexo VARCHAR(20) NOT NULL,
-    raca VARCHAR(100),
-    idade INTEGER,
-    imagem VARCHAR(255)
+    email VARCHAR(150) NOT NULL UNIQUE,
+    telefone VARCHAR(20) NOT NULL
 );
 
-INSERT INTO pets (nome, especie, sexo, raca, idade, imagem)
-VALUES (
-    'Rex',
-    'Cachorro',
-    'Macho',
-    'Labrador',
-    8,
-    'https://petanjo.com/blog/wp-content/uploads/2021/11/labrador-tudo-sobre-a-raca.jpg'
+CREATE TABLE pets (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    especie VARCHAR(50) NOT NULL,
+    sexo VARCHAR(20) NOT NULL CHECK (sexo IN ('MACHO', 'FEMEA')),
+    raca VARCHAR(100),
+    idade INTEGER CHECK (idade >= 0),
+    imagem VARCHAR(255),
+    adotante_id INTEGER,
+    CONSTRAINT fk_adotante
+        FOREIGN KEY (adotante_id)
+        REFERENCES adotantes(id)
 );
 ```
+
+# Relacionamento
+- Um pet pode estar associado a um adotante
+- Implementado através de chave estrangeira (adotante_id)
+- Garante integridade referencial no banco
+
 
 # ⚠️ Observações importantes
 - O banco de dados precisa ser criado previamente:

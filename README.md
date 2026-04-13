@@ -139,7 +139,7 @@ CREATE TABLE pets (
 );
 ```
 
-# Relacionamento
+## Relacionamento
 - Um pet pode estar associado a um adotante
 - Implementado através de chave estrangeira (adotante_id)
 - Garante integridade referencial no banco
